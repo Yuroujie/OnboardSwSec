@@ -10,5 +10,3 @@
 - `fsw/inc`：事件号、功能码和配置接口
 - `config`：消息、表和平台配置
 - `fsw/tables`：默认表
-
-如果需要看主要入口，可以先从 `fsw/src/mode_app.c` 和 `fsw/src/mode_app_dispatch.c` 开始。
