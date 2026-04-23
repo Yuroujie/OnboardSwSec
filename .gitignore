@@ -1,0 +1,15 @@
+# Build and local tooling
+build/
+_build/
+cmake-build-*/
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.pyc
