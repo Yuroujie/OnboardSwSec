@@ -65,6 +65,18 @@ typedef struct
     CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command header */
 } PERIODIC_TASK_APP_DisplayParamCmd_t;
 
+typedef struct
+{
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command header */
+    PERIODIC_TASK_APP_SimTraffic_Payload_t Payload; /**< \brief Command payload */
+} PERIODIC_TASK_APP_SimTrafficCmd_t;
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command header */
+    PERIODIC_TASK_APP_RunBurst_Payload_t Payload; /**< \brief Command payload */
+} PERIODIC_TASK_APP_RunBurstCmd_t;
+
 /*************************************************************************/
 /*
 ** Type definition (Counter App housekeeping)

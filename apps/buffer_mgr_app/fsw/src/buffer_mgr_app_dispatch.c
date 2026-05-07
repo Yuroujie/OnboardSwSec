@@ -86,6 +86,20 @@ void BUFFER_MGR_APP_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr)
             }
             break;
 
+        case BUFFER_MGR_APP_CREATE_STORE_CC:
+            if (BUFFER_MGR_APP_VerifyCmdLength(&SBBufPtr->Msg, sizeof(BUFFER_MGR_APP_CreateStoreCmd_t)))
+            {
+                BUFFER_MGR_APP_CreateStoreCmd((const BUFFER_MGR_APP_CreateStoreCmd_t *)SBBufPtr);
+            }
+            break;
+
+        case BUFFER_MGR_APP_COPY_STORE_CC:
+            if (BUFFER_MGR_APP_VerifyCmdLength(&SBBufPtr->Msg, sizeof(BUFFER_MGR_APP_CopyStoreCmd_t)))
+            {
+                BUFFER_MGR_APP_CopyStoreCmd((const BUFFER_MGR_APP_CopyStoreCmd_t *)SBBufPtr);
+            }
+            break;
+
         default:
             CFE_EVS_SendEvent(BUFFER_MGR_APP_CC_ERR_EID, CFE_EVS_EventType_ERROR, "Invalid ground command code: CC = %d",
                               CommandCode);

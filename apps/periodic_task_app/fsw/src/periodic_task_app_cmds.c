@@ -27,6 +27,53 @@
 
 #include "sample_lib.h"
 
+#include <string.h>
+
+#define PERIODIC_TASK_APP_FAST_COMMAND_MSEC 200U
+#define PERIODIC_TASK_APP_MAX_BURST_COUNT   32U
+
+static uint32 PERIODIC_TASK_APP_UpdateBurstLoadWindow(uint16 RequestedCount, uint16 SpacingMsec)
+{
+    uint8  pattern[64];
+    uint8  burst_window[32];
+    uint8  replay_window[32];
+    uint8  audit_window[16];
+    uint32 pressure;
+    uint32 copy_len;
+    uint32 i;
+    uint32 accumulator = 0;
+
+    for (i = 0; i < sizeof(pattern); ++i)
+    {
+        pattern[i] = (uint8)((RequestedCount + SpacingMsec + i) & 0xFFU);
+    }
+
+    pressure = (uint32)RequestedCount * (uint32)(PERIODIC_TASK_APP_FAST_COMMAND_MSEC - SpacingMsec);
+    copy_len = pressure / 8U;
+    if (copy_len > sizeof(pattern))
+    {
+        copy_len = sizeof(pattern);
+    }
+
+    /* Copy burst profile into local telemetry windows. */
+    memcpy(burst_window, pattern, copy_len);
+    memmove(replay_window, burst_window, copy_len);
+    memcpy(audit_window, replay_window + (SpacingMsec & 0x3U), copy_len);
+
+    for (i = 0; i < copy_len && i < sizeof(burst_window); ++i)
+    {
+        accumulator += burst_window[i];
+        accumulator += replay_window[i & 0x1FU];
+        accumulator ^= audit_window[i & 0x0FU];
+        if (burst_window[i] > PERIODIC_TASK_APP_FAST_COMMAND_MSEC)
+        {
+            accumulator ^= (uint32)RequestedCount;
+        }
+    }
+
+    return accumulator;
+}
+
 CFE_Status_t PERIODIC_TASK_APP_SendHkCmd(const PERIODIC_TASK_APP_SendHkCmd_t *Msg)
 {
     int i;
@@ -70,8 +117,68 @@ CFE_Status_t PERIODIC_TASK_APP_ResetCountersCmd(const PERIODIC_TASK_APP_ResetCou
     PERIODIC_TASK_APP_Data.HkTlm.Payload.LastCommand          = PERIODIC_TASK_APP_RESET_STATE_CC;
     PERIODIC_TASK_APP_Data.HkTlm.Payload.TickCount            = 0;
     PERIODIC_TASK_APP_Data.HkTlm.Payload.ScheduledActionCount = 0;
+    PERIODIC_TASK_APP_Data.HkTlm.Payload.SimTrafficCount      = 0;
+    PERIODIC_TASK_APP_Data.HkTlm.Payload.BurstCommandCount    = 0;
+    PERIODIC_TASK_APP_Data.HkTlm.Payload.LastSimMsgId         = 0;
+    PERIODIC_TASK_APP_Data.HkTlm.Payload.LastSimCmdCode       = 0;
 
     CFE_EVS_SendEvent(PERIODIC_TASK_APP_RESET_INF_EID, CFE_EVS_EventType_INFORMATION, "PERIODIC_TASK_APP: state reset command");
+
+    PERIODIC_TASK_APP_SendHkCmd(NULL);
+    return CFE_SUCCESS;
+}
+
+CFE_Status_t PERIODIC_TASK_APP_SimTrafficCmd(const PERIODIC_TASK_APP_SimTrafficCmd_t *Msg)
+{
+    PERIODIC_TASK_APP_Data.CmdCounter++;
+    PERIODIC_TASK_APP_Data.HkTlm.Payload.LastCommand = PERIODIC_TASK_APP_SIM_TRAFFIC_CC;
+    PERIODIC_TASK_APP_Data.HkTlm.Payload.SimTrafficCount++;
+    PERIODIC_TASK_APP_Data.HkTlm.Payload.LastSimMsgId = Msg->Payload.MsgId;
+    PERIODIC_TASK_APP_Data.HkTlm.Payload.LastSimCmdCode = Msg->Payload.CmdCode;
+
+    if (Msg->Payload.DelayMsec <= PERIODIC_TASK_APP_FAST_COMMAND_MSEC)
+    {
+        PERIODIC_TASK_APP_Data.HkTlm.Payload.BurstCommandCount++;
+    }
+
+    CFE_EVS_SendEvent(PERIODIC_TASK_APP_VALUE_INF_EID, CFE_EVS_EventType_INFORMATION,
+                      "PERIODIC_TASK_APP: simulated traffic msg=%u cc=%u len=%u delay=%u",
+                      (unsigned int)Msg->Payload.MsgId, (unsigned int)Msg->Payload.CmdCode,
+                      (unsigned int)Msg->Payload.MsgLength, (unsigned int)Msg->Payload.DelayMsec);
+
+    PERIODIC_TASK_APP_SendHkCmd(NULL);
+    return CFE_SUCCESS;
+}
+
+CFE_Status_t PERIODIC_TASK_APP_RunBurstCmd(const PERIODIC_TASK_APP_RunBurstCmd_t *Msg)
+{
+    uint16 i;
+    uint16 count = Msg->Payload.Count;
+
+    if (count > PERIODIC_TASK_APP_MAX_BURST_COUNT)
+    {
+        count = PERIODIC_TASK_APP_MAX_BURST_COUNT;
+    }
+
+    PERIODIC_TASK_APP_Data.CmdCounter++;
+    PERIODIC_TASK_APP_Data.HkTlm.Payload.LastCommand = PERIODIC_TASK_APP_RUN_BURST_CC;
+    PERIODIC_TASK_APP_Data.HkTlm.Payload.ScheduledActionCount +=
+        PERIODIC_TASK_APP_UpdateBurstLoadWindow(Msg->Payload.Count, Msg->Payload.SpacingMsec) & 0x1U;
+
+    for (i = 0; i < count; ++i)
+    {
+        PERIODIC_TASK_APP_Data.HkTlm.Payload.SimTrafficCount++;
+        if (Msg->Payload.SpacingMsec <= PERIODIC_TASK_APP_FAST_COMMAND_MSEC)
+        {
+            PERIODIC_TASK_APP_Data.HkTlm.Payload.BurstCommandCount++;
+        }
+
+        PERIODIC_TASK_APP_ProcessTick();
+    }
+
+    CFE_EVS_SendEvent(PERIODIC_TASK_APP_VALUE_INF_EID, CFE_EVS_EventType_INFORMATION,
+                      "PERIODIC_TASK_APP: simulated burst processed %u commands at %u ms spacing",
+                      (unsigned int)count, (unsigned int)Msg->Payload.SpacingMsec);
 
     PERIODIC_TASK_APP_SendHkCmd(NULL);
     return CFE_SUCCESS;

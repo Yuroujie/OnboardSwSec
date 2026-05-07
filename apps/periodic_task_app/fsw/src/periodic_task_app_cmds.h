@@ -35,5 +35,7 @@ CFE_Status_t PERIODIC_TASK_APP_ResetCountersCmd(const PERIODIC_TASK_APP_ResetCou
 CFE_Status_t PERIODIC_TASK_APP_ProcessCmd(const PERIODIC_TASK_APP_ProcessCmd_t *Msg);
 CFE_Status_t PERIODIC_TASK_APP_NoopCmd(const PERIODIC_TASK_APP_NoopCmd_t *Msg);
 CFE_Status_t PERIODIC_TASK_APP_DisplayParamCmd(const PERIODIC_TASK_APP_DisplayParamCmd_t *Msg);
+CFE_Status_t PERIODIC_TASK_APP_SimTrafficCmd(const PERIODIC_TASK_APP_SimTrafficCmd_t *Msg);
+CFE_Status_t PERIODIC_TASK_APP_RunBurstCmd(const PERIODIC_TASK_APP_RunBurstCmd_t *Msg);
 
 #endif /* PERIODIC_TASK_APP_CMDS_H */

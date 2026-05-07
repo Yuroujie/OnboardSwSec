@@ -40,6 +40,8 @@ enum PERIODIC_TASK_APP_FunctionCode_
     PERIODIC_TASK_APP_FunctionCode_RESET_STATE   = 1,
     PERIODIC_TASK_APP_FunctionCode_INCREASE_STEP = 2,
     PERIODIC_TASK_APP_FunctionCode_DECREASE_STEP = 3,
+    PERIODIC_TASK_APP_FunctionCode_SIM_TRAFFIC   = 4,
+    PERIODIC_TASK_APP_FunctionCode_RUN_BURST     = 5,
 };
 
 #endif

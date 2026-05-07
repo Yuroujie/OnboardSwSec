@@ -1,0 +1,74 @@
+/************************************************************************
+ * NASA Docket No. GSC-19,200-1, and identified as "cFS Draco"
+ *
+ * Copyright (c) 2023 United States Government as represented by the
+ * Administrator of the National Aeronautics and Space Administration.
+ * All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ************************************************************************/
+
+/**
+ * @file
+ *
+ *  The Storage Demo App header file containing version information
+ */
+
+#ifndef STORAGE_AUDIT_APP_VERSION_H
+#define STORAGE_AUDIT_APP_VERSION_H
+
+/* Development Build Macro Definitions */
+
+#define STORAGE_AUDIT_APP_BUILD_NUMBER    0
+#define STORAGE_AUDIT_APP_BUILD_BASELINE  "v7.0.0" /*!< Development Build: git tag that is the base for the current development */
+#define STORAGE_AUDIT_APP_BUILD_DEV_CYCLE "v7.0.0" /**< @brief Development: Release name for current development cycle */
+#define STORAGE_AUDIT_APP_BUILD_CODENAME  "Draco" /**< @brief: Development: Code name for the current build */
+
+/*
+ * Version Macros, see \ref cfsversions for definitions.
+ */
+#define STORAGE_AUDIT_APP_MAJOR_VERSION 7  /*!< @brief Major version number. */
+#define STORAGE_AUDIT_APP_MINOR_VERSION 0  /*!< @brief Minor version number. */
+#define STORAGE_AUDIT_APP_REVISION      0  /*!< @brief Revision version number. Value of 0 indicates a development version.*/
+
+/**
+ * @brief Last official release.
+ */
+#define STORAGE_AUDIT_APP_LAST_OFFICIAL "v7.0.0"
+
+/*!
+ * @brief Mission revision.
+ *
+ * Reserved for mission use to denote patches/customizations as needed.
+ * Values 1-254 are reserved for mission use to denote patches/customizations as needed. NOTE: Reserving 0 and 0xFF for
+ * cFS open-source development use (pending resolution of nasa/cFS#440)
+ */
+#define STORAGE_AUDIT_APP_MISSION_REV 0x0
+
+#define STORAGE_AUDIT_APP_STR_HELPER(x) #x /*!< @brief Helper function to concatenate strings from integer macros */
+#define STORAGE_AUDIT_APP_STR(x) \
+    STORAGE_AUDIT_APP_STR_HELPER(x) /*!< @brief Helper function to concatenate strings from integer macros */
+
+/*! @brief Development Build Version Number.
+ * @details Baseline git tag + Number of commits since baseline. @n
+ * See @ref cfsversions for format differences between development and release versions.
+ */
+#define STORAGE_AUDIT_APP_VERSION STORAGE_AUDIT_APP_BUILD_BASELINE "+dev" STORAGE_AUDIT_APP_STR(STORAGE_AUDIT_APP_BUILD_NUMBER)
+
+/**
+ * @brief Max Version String length.
+ * 
+ * Maximum length that an OSAL version string can be.
+ * 
+ */
+#define STORAGE_AUDIT_APP_CFG_MAX_VERSION_STR_LEN 256
+
+#endif /* STORAGE_AUDIT_APP_VERSION_H */

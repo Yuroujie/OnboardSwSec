@@ -35,5 +35,7 @@ CFE_Status_t BUFFER_MGR_APP_ResetCountersCmd(const BUFFER_MGR_APP_ResetCountersC
 CFE_Status_t BUFFER_MGR_APP_PushDataCmd(const BUFFER_MGR_APP_PushDataCmd_t *Msg);
 CFE_Status_t BUFFER_MGR_APP_NoopCmd(const BUFFER_MGR_APP_NoopCmd_t *Msg);
 CFE_Status_t BUFFER_MGR_APP_ClearCmd(const BUFFER_MGR_APP_ClearCmd_t *Msg);
+CFE_Status_t BUFFER_MGR_APP_CreateStoreCmd(const BUFFER_MGR_APP_CreateStoreCmd_t *Msg);
+CFE_Status_t BUFFER_MGR_APP_CopyStoreCmd(const BUFFER_MGR_APP_CopyStoreCmd_t *Msg);
 
 #endif /* BUFFER_MGR_APP_CMDS_H */

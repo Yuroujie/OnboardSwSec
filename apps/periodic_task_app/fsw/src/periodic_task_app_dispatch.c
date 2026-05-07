@@ -86,6 +86,20 @@ void PERIODIC_TASK_APP_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr)
             }
             break;
 
+        case PERIODIC_TASK_APP_SIM_TRAFFIC_CC:
+            if (PERIODIC_TASK_APP_VerifyCmdLength(&SBBufPtr->Msg, sizeof(PERIODIC_TASK_APP_SimTrafficCmd_t)))
+            {
+                PERIODIC_TASK_APP_SimTrafficCmd((const PERIODIC_TASK_APP_SimTrafficCmd_t *)SBBufPtr);
+            }
+            break;
+
+        case PERIODIC_TASK_APP_RUN_BURST_CC:
+            if (PERIODIC_TASK_APP_VerifyCmdLength(&SBBufPtr->Msg, sizeof(PERIODIC_TASK_APP_RunBurstCmd_t)))
+            {
+                PERIODIC_TASK_APP_RunBurstCmd((const PERIODIC_TASK_APP_RunBurstCmd_t *)SBBufPtr);
+            }
+            break;
+
         default:
             CFE_EVS_SendEvent(PERIODIC_TASK_APP_CC_ERR_EID, CFE_EVS_EventType_ERROR, "Invalid ground command code: CC = %d",
                               CommandCode);
