@@ -38,6 +38,10 @@
 #define MODE_APP_DEFAULT_SEED      0x4D4F4445U
 #define MODE_APP_UP_DEFAULT_PERIOD_SEC   16U
 #define MODE_APP_UP_DEFAULT_OPEN_LEN_SEC 6U
+#define MODE_APP_SIM_AP_COUNT             176U
+#define MODE_APP_SIM_AP_ACTIVE_STATE      1U
+#define MODE_APP_SIM_AP_PASSIVE_STATE     2U
+#define MODE_APP_SIM_AP_DISABLED_STATE    3U
 
 static uint64 MODE_APP_WindowEpochSec = 0;
 static uint32 MODE_APP_WindowSeed     = 0;
@@ -295,8 +299,95 @@ CFE_Status_t MODE_APP_ResetCountersCmd(const MODE_APP_ResetCountersCmd_t *Msg)
     MODE_APP_Data.HkTlm.Payload.PolicyEnabled  = 1;
     MODE_APP_Data.HkTlm.Payload.ActiveMode     = 0;
     MODE_APP_Data.HkTlm.Payload.ModeChangeCount = 0;
+    MODE_APP_Data.HkTlm.Payload.MonitorActiveCount = MODE_APP_SIM_AP_COUNT;
+    MODE_APP_Data.HkTlm.Payload.MonitorPassiveCount = 0;
+    MODE_APP_Data.HkTlm.Payload.MonitorDisabledCount = 0;
+    MODE_APP_Data.HkTlm.Payload.ChecksumDisabledCount = 0;
+    MODE_APP_Data.HkTlm.Payload.ApStatsResetCount = 0;
+    MODE_APP_Data.HkTlm.Payload.LastActionPoint = 0;
 
     CFE_EVS_SendEvent(MODE_APP_RESET_INF_EID, CFE_EVS_EventType_INFORMATION, "MODE_APP: state reset command");
+
+    MODE_APP_SendHkCmd(NULL);
+    return CFE_SUCCESS;
+}
+
+CFE_Status_t MODE_APP_SetApStateCmd(const MODE_APP_SetApStateCmd_t *Msg)
+{
+    uint8 new_state = Msg->Payload.NewApState;
+
+    if (!MODE_APP_CheckTemporalWindow("SET_AP_STATE"))
+    {
+        return CFE_STATUS_EXTERNAL_RESOURCE_FAIL;
+    }
+
+    MODE_APP_Data.CmdCounter++;
+    MODE_APP_Data.HkTlm.Payload.LastActionPoint = Msg->Payload.ApNumber;
+
+    if (new_state == MODE_APP_SIM_AP_ACTIVE_STATE)
+    {
+        MODE_APP_Data.HkTlm.Payload.MonitorActiveCount++;
+    }
+    else if (new_state == MODE_APP_SIM_AP_PASSIVE_STATE)
+    {
+        MODE_APP_Data.HkTlm.Payload.MonitorPassiveCount++;
+    }
+    else if (new_state == MODE_APP_SIM_AP_DISABLED_STATE)
+    {
+        MODE_APP_Data.HkTlm.Payload.MonitorDisabledCount++;
+    }
+    else
+    {
+        MODE_APP_Data.ErrCounter++;
+        CFE_EVS_SendEvent(MODE_APP_VALUE_INF_EID, CFE_EVS_EventType_ERROR,
+                          "MODE_APP: invalid simulated AP state %u", (unsigned int)new_state);
+        MODE_APP_SendHkCmd(NULL);
+        return CFE_STATUS_EXTERNAL_RESOURCE_FAIL;
+    }
+
+    MODE_APP_Data.HkTlm.Payload.ModeChangeCount++;
+
+    CFE_EVS_SendEvent(MODE_APP_VALUE_INF_EID, CFE_EVS_EventType_INFORMATION,
+                      "MODE_APP: simulated AP %u set to state %u",
+                      (unsigned int)Msg->Payload.ApNumber, (unsigned int)new_state);
+
+    MODE_APP_SendHkCmd(NULL);
+    return CFE_SUCCESS;
+}
+
+CFE_Status_t MODE_APP_DisableCheckCmd(const MODE_APP_DisableCheckCmd_t *Msg)
+{
+    if (!MODE_APP_CheckTemporalWindow("DISABLE_CHECK"))
+    {
+        return CFE_STATUS_EXTERNAL_RESOURCE_FAIL;
+    }
+
+    MODE_APP_Data.CmdCounter++;
+    MODE_APP_Data.HkTlm.Payload.ChecksumDisabledCount++;
+    MODE_APP_Data.HkTlm.Payload.ModeChangeCount++;
+
+    CFE_EVS_SendEvent(MODE_APP_VALUE_INF_EID, CFE_EVS_EventType_INFORMATION,
+                      "MODE_APP: simulated checksum entry %lu disabled",
+                      (unsigned long)Msg->Payload.EntryId);
+
+    MODE_APP_SendHkCmd(NULL);
+    return CFE_SUCCESS;
+}
+
+CFE_Status_t MODE_APP_ResetApStatsCmd(const MODE_APP_ResetApStatsCmd_t *Msg)
+{
+    if (!MODE_APP_CheckTemporalWindow("RESET_AP_STATS"))
+    {
+        return CFE_STATUS_EXTERNAL_RESOURCE_FAIL;
+    }
+
+    MODE_APP_Data.CmdCounter++;
+    MODE_APP_Data.HkTlm.Payload.ApStatsResetCount++;
+    MODE_APP_Data.HkTlm.Payload.LastActionPoint = Msg->Payload.ApNumber;
+
+    CFE_EVS_SendEvent(MODE_APP_VALUE_INF_EID, CFE_EVS_EventType_INFORMATION,
+                      "MODE_APP: simulated AP %u statistics reset",
+                      (unsigned int)Msg->Payload.ApNumber);
 
     MODE_APP_SendHkCmd(NULL);
     return CFE_SUCCESS;

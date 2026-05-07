@@ -66,6 +66,17 @@ typedef struct
     CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command header */
 } BUFFER_MGR_APP_ClearCmd_t;
 
+typedef struct
+{
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command header */
+} BUFFER_MGR_APP_CreateStoreCmd_t;
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command header */
+    BUFFER_MGR_APP_CopyStore_Payload_t Payload; /**< \brief Command payload */
+} BUFFER_MGR_APP_CopyStoreCmd_t;
+
 /*************************************************************************/
 /*
 ** Type definition (Storage Demo App housekeeping)

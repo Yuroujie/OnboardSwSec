@@ -65,6 +65,24 @@ typedef struct
     CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command header */
 } MODE_APP_DisplayParamCmd_t;
 
+typedef struct
+{
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command header */
+    MODE_APP_SetApState_Payload_t Payload; /**< \brief Command payload */
+} MODE_APP_SetApStateCmd_t;
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command header */
+    MODE_APP_DisableCheck_Payload_t Payload; /**< \brief Command payload */
+} MODE_APP_DisableCheckCmd_t;
+
+typedef struct
+{
+    CFE_MSG_CommandHeader_t CommandHeader; /**< \brief Command header */
+    MODE_APP_SetApState_Payload_t Payload; /**< \brief Command payload */
+} MODE_APP_ResetApStatsCmd_t;
+
 /*************************************************************************/
 /*
 ** Type definition (Mode App housekeeping)

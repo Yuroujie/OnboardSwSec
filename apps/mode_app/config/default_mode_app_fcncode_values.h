@@ -40,6 +40,9 @@ enum MODE_APP_FunctionCode_
     MODE_APP_FunctionCode_RESET_STATE   = 1,
     MODE_APP_FunctionCode_ADVANCE_MODE  = 2,
     MODE_APP_FunctionCode_TOGGLE_POLICY = 3,
+    MODE_APP_FunctionCode_SET_AP_STATE  = 4,
+    MODE_APP_FunctionCode_DISABLE_CHECK = 5,
+    MODE_APP_FunctionCode_RESET_AP_STAT = 6,
 };
 
 #endif

@@ -34,6 +34,18 @@ typedef struct MODE_APP_DisplayParam_Payload
     char   ValStr[MODE_APP_MISSION_STRING_VAL_LEN]; /**< An example string */
 } MODE_APP_DisplayParam_Payload_t;
 
+typedef struct MODE_APP_SetApState_Payload
+{
+    uint16 ApNumber;   /**< Simulated limit-checker actionpoint number */
+    uint8  NewApState; /**< 1=active, 2=passive, 3=disabled */
+    uint8  Padding;
+} MODE_APP_SetApState_Payload_t;
+
+typedef struct MODE_APP_DisableCheck_Payload
+{
+    uint32 EntryId; /**< Simulated checksum or monitor entry identifier */
+} MODE_APP_DisableCheck_Payload_t;
+
 /*************************************************************************/
 /*
 ** Type definition (Mode App housekeeping)
@@ -46,6 +58,12 @@ typedef struct MODE_APP_HkTlm_Payload
     uint8 PolicyEnabled;
     uint8 ActiveMode;
     uint32 ModeChangeCount;
+    uint32 MonitorActiveCount;
+    uint32 MonitorPassiveCount;
+    uint32 MonitorDisabledCount;
+    uint32 ChecksumDisabledCount;
+    uint32 ApStatsResetCount;
+    uint16 LastActionPoint;
 } MODE_APP_HkTlm_Payload_t;
 
 #endif

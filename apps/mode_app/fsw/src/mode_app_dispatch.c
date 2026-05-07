@@ -86,6 +86,27 @@ void MODE_APP_ProcessGroundCommand(const CFE_SB_Buffer_t *SBBufPtr)
             }
             break;
 
+        case MODE_APP_SET_AP_STATE_CC:
+            if (MODE_APP_VerifyCmdLength(&SBBufPtr->Msg, sizeof(MODE_APP_SetApStateCmd_t)))
+            {
+                MODE_APP_SetApStateCmd((const MODE_APP_SetApStateCmd_t *)SBBufPtr);
+            }
+            break;
+
+        case MODE_APP_DISABLE_CHECK_CC:
+            if (MODE_APP_VerifyCmdLength(&SBBufPtr->Msg, sizeof(MODE_APP_DisableCheckCmd_t)))
+            {
+                MODE_APP_DisableCheckCmd((const MODE_APP_DisableCheckCmd_t *)SBBufPtr);
+            }
+            break;
+
+        case MODE_APP_RESET_AP_STAT_CC:
+            if (MODE_APP_VerifyCmdLength(&SBBufPtr->Msg, sizeof(MODE_APP_ResetApStatsCmd_t)))
+            {
+                MODE_APP_ResetApStatsCmd((const MODE_APP_ResetApStatsCmd_t *)SBBufPtr);
+            }
+            break;
+
         default:
             CFE_EVS_SendEvent(MODE_APP_CC_ERR_EID, CFE_EVS_EventType_ERROR, "Invalid ground command code: CC = %d",
                               CommandCode);

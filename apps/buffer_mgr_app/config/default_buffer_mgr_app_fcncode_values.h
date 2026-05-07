@@ -40,6 +40,8 @@ enum BUFFER_MGR_APP_FunctionCode_
     BUFFER_MGR_APP_FunctionCode_RESET_BUFFER = 1,
     BUFFER_MGR_APP_FunctionCode_STAGE_DATA   = 2,
     BUFFER_MGR_APP_FunctionCode_FLUSH_BUFFER = 3,
+    BUFFER_MGR_APP_FunctionCode_CREATE_STORE = 4,
+    BUFFER_MGR_APP_FunctionCode_COPY_STORE   = 5,
 };
 
 #endif

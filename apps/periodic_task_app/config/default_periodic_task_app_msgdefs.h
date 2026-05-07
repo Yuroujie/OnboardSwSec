@@ -34,6 +34,20 @@ typedef struct PERIODIC_TASK_APP_DisplayParam_Payload
     char   ValStr[PERIODIC_TASK_APP_MISSION_STRING_VAL_LEN]; /**< An example string */
 } PERIODIC_TASK_APP_DisplayParam_Payload_t;
 
+typedef struct PERIODIC_TASK_APP_SimTraffic_Payload
+{
+    uint16 MsgId;     /**< Simulated CCSDS message identifier */
+    uint16 CmdCode;   /**< Simulated command code */
+    uint16 MsgLength; /**< Simulated command packet length */
+    uint16 DelayMsec; /**< Delay since previous command in milliseconds */
+} PERIODIC_TASK_APP_SimTraffic_Payload_t;
+
+typedef struct PERIODIC_TASK_APP_RunBurst_Payload
+{
+    uint16 Count;       /**< Number of simulated fast commands to process */
+    uint16 SpacingMsec; /**< Inter-command spacing in milliseconds */
+} PERIODIC_TASK_APP_RunBurst_Payload_t;
+
 /*************************************************************************/
 /*
 ** Type definition (Counter App housekeeping)
@@ -47,6 +61,10 @@ typedef struct PERIODIC_TASK_APP_HkTlm_Payload
     uint8 LastCommand;
     uint32 TickCount;
     uint32 ScheduledActionCount;
+    uint32 SimTrafficCount;
+    uint32 BurstCommandCount;
+    uint16 LastSimMsgId;
+    uint16 LastSimCmdCode;
 } PERIODIC_TASK_APP_HkTlm_Payload_t;
 
 #endif

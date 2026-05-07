@@ -84,6 +84,7 @@ CFE_Status_t MODE_APP_Init(void)
         CFE_MSG_Init(CFE_MSG_PTR(MODE_APP_Data.HkTlm.TelemetryHeader), CFE_SB_ValueToMsgId(MODE_APP_HK_TLM_MID),
                      sizeof(MODE_APP_Data.HkTlm));
         MODE_APP_Data.HkTlm.Payload.PolicyEnabled = 1;
+        MODE_APP_Data.HkTlm.Payload.MonitorActiveCount = 176;
 
         status = CFE_SB_CreatePipe(&MODE_APP_Data.CommandPipe, MODE_APP_PLATFORM_PIPE_DEPTH,
                                    MODE_APP_PLATFORM_PIPE_NAME);

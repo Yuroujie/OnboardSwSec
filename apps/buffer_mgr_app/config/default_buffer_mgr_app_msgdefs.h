@@ -32,6 +32,14 @@ typedef struct BUFFER_MGR_APP_StageData_Payload
     uint32 Amount; /**< Amount of buffered data to stage */
 } BUFFER_MGR_APP_StageData_Payload_t;
 
+typedef struct BUFFER_MGR_APP_CopyStore_Payload
+{
+    uint32 ObjectId;  /**< Simulated file or table object identifier */
+    uint32 ByteCount; /**< Simulated bytes copied into the storage area */
+    uint8  Overwrite; /**< Nonzero when the simulated copy overwrites an object */
+    uint8  Reserved[3];
+} BUFFER_MGR_APP_CopyStore_Payload_t;
+
 /*************************************************************************/
 /*
 ** Type definition (Storage buffer app housekeeping)
@@ -47,6 +55,9 @@ typedef struct BUFFER_MGR_APP_HkTlm_Payload
     uint32 ReleaseThreshold;
     uint32 ReleaseCount;
     uint32 ReleaseActionCount;
+    uint32 StorageObjectCount;
+    uint32 StorageBytes;
+    uint8 StorageDirCreated;
 } BUFFER_MGR_APP_HkTlm_Payload_t;
 
 #endif

@@ -35,5 +35,8 @@ CFE_Status_t MODE_APP_ResetCountersCmd(const MODE_APP_ResetCountersCmd_t *Msg);
 CFE_Status_t MODE_APP_ProcessCmd(const MODE_APP_ProcessCmd_t *Msg);
 CFE_Status_t MODE_APP_NoopCmd(const MODE_APP_NoopCmd_t *Msg);
 CFE_Status_t MODE_APP_DisplayParamCmd(const MODE_APP_DisplayParamCmd_t *Msg);
+CFE_Status_t MODE_APP_SetApStateCmd(const MODE_APP_SetApStateCmd_t *Msg);
+CFE_Status_t MODE_APP_DisableCheckCmd(const MODE_APP_DisableCheckCmd_t *Msg);
+CFE_Status_t MODE_APP_ResetApStatsCmd(const MODE_APP_ResetApStatsCmd_t *Msg);
 
 #endif /* MODE_APP_CMDS_H */
